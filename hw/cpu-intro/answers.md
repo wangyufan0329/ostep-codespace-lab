@@ -1,48 +1,48 @@
 ## Q1
 - Prediction / 预测: Total Time 10, CPU Busy 10 (100%), IO Busy 0 (0%) / 总时间10，CPU利用率100%，I/O利用率0%
 - Reasoning / 理由: Both processes only use the CPU (5:100,5:100) with no I/O, so the CPU never goes idle. PID 0 runs its 5 instructions first, then PID 1 runs its 5, for 10 ticks total. / 两个进程都是纯CPU指令(5:100,5:100)，没有I/O操作，所以CPU从头到尾不会空闲。PID 0先跑完5条指令，再轮到PID 1跑5条，共10个tick。
-- Verified result / 验证结果:
-- Analysis / 分析:
+- Verified result / 验证结果: Total Time 10, CPU Busy 10 (100.00%), IO Busy 0 (0.00%) / 总时间10，CPU利用率100.00%，I/O利用率0.00%
+- Analysis / 分析: The prediction matched exactly. With no I/O instructions, the CPU runs both processes back-to-back without ever waiting, confirming that CPU utilization reaches 100% only when there is no I/O-induced idle time. / 预测完全准确。由于没有I/O指令，CPU连续运行两个进程而不需要等待，验证了只有在没有I/O导致的空闲时间时，CPU利用率才能达到100%。
 
 ## Q2
 - Prediction / 预测: Total Time 11, CPU Busy 6 (54.55%), IO Busy 5 (45.45%) / 总时间11，CPU利用率54.55%，I/O利用率45.45%
 - Reasoning / 理由: PID 0 runs its 4 CPU instructions first (ticks 1-4) since it has no I/O to trigger a switch. Then PID 1 starts its I/O: 1 tick to issue it (RUN:io), 5 ticks BLOCKED while the device works, 1 tick to handle completion (RUN:io_done). Since PID 0 already finished, the CPU sits idle during the 5 BLOCKED ticks. / PID 0没有I/O触发切换，所以先连续跑完4条CPU指令(tick1-4)。然后PID 1开始I/O：1个tick发起(RUN:io)，5个tick设备工作期间BLOCKED，1个tick处理完成(RUN:io_done)。由于PID 0已经跑完，BLOCKED的5个tick期间CPU处于空闲状态。
-- Verified result / 验证结果:
-- Analysis / 分析:
+- Verified result / 验证结果: Total Time 11, CPU Busy 6 (54.55%), IO Busy 5 (45.45%) / 总时间11，CPU利用率54.55%，I/O利用率45.45%
+- Analysis / 分析: The prediction matched exactly. This confirms that under the default SWITCH_ON_IO behavior, a process with no I/O runs to completion uninterrupted, and the CPU goes idle whenever all remaining processes are BLOCKED on I/O with nothing else ready to run. / 预测完全准确。这验证了在默认的SWITCH_ON_IO行为下，没有I/O的进程会不间断地跑完；当剩下的进程都在I/O阻塞中、没有别的进程可以运行时，CPU就会处于空闲状态。
 
 ## Q3
 - Prediction / 预测: Total Time 7, CPU Busy 6 (85.71%), IO Busy 5 (71.43%) / 总时间7，CPU利用率85.71%，I/O利用率71.43%
 - Reasoning / 理由: PID 0 issues I/O first (tick 1), then switches to PID 1 (default SWITCH_ON_IO) during the 5-tick BLOCKED period (ticks 2-6). PID 1's 4 CPU instructions fit into ticks 2-5, leaving tick 6 idle since PID 0's I/O hasn't finished yet. PID 0 handles completion at tick 7. Unlike Q2, the CPU is idle for only 1 tick instead of 5, because PID 1 can fill most of the I/O wait time. / PID 0先发起I/O(tick1)，然后因为默认SWITCH_ON_IO立刻切给PID1，在PID0的5个tick BLOCKED期间(tick2-6)运行。PID1的4条CPU指令刚好占满tick2-5，tick6因为PID0的I/O还没完成而空闲。PID0在tick7处理完成。和Q2不同，这里CPU只空闲1个tick而不是5个，因为PID1能填满大部分I/O等待时间。
-- Verified result / 验证结果:
-- Analysis / 分析:
+- Verified result / 验证结果: Total Time 7, CPU Busy 6 (85.71%), IO Busy 5 (71.43%) / 总时间7，CPU利用率85.71%，I/O利用率71.43%
+- Analysis / 分析: The prediction matched exactly. This confirms that process order matters even with the same total instructions: putting the I/O-issuing process first lets the CPU-bound process fill most of the I/O wait time, cutting idle time from 5 ticks (Q2) down to just 1 tick (Q3). / 预测完全准确。这验证了即使指令总数相同，进程顺序也很重要：把发起I/O的进程放在前面，能让纯CPU进程填满大部分I/O等待时间，把CPU空闲时间从Q2的5个tick减少到Q3的1个tick。
 
 ## Q4
 - Prediction / 预测: Total Time 11, CPU Busy 6 (54.55%), IO Busy 5 (45.45%) / 总时间11，CPU利用率54.55%，I/O利用率45.45%
 - Reasoning / 理由: With SWITCH_ON_END, the CPU never switches to another process until the current one is fully DONE, even during I/O wait. So while PID 0 is BLOCKED for 5 ticks (ticks 2-6), the CPU sits idle since PID 1 isn't allowed to run yet. Only after PID 0 finishes at tick 7 does PID 1 get to run its 4 instructions (ticks 8-11). / 在SWITCH_ON_END下，即使在I/O等待期间，CPU也不会切换给其他进程，直到当前进程彻底DONE。所以PID 0在BLOCKED的5个tick(tick2-6)里，CPU处于空闲状态，因为PID1还不被允许运行。只有当PID0在tick7结束后，PID1才能开始跑它的4条指令(tick8-11)。
-- Verified result / 验证结果:
-- Analysis / 分析:
+- Verified result / 验证结果: Total Time 11, CPU Busy 6 (54.55%), IO Busy 5 (45.45%) / 总时间11，CPU利用率54.55%，I/O利用率45.45%
+- Analysis / 分析: The prediction matched exactly. Compared to Q3 (SWITCH_ON_IO, Total Time 7), this "dumb" switching policy wastes 4 extra ticks because the CPU refuses to run PID 1 while PID 0 is merely blocked, not finished — it's an example of how a naive scheduler wastes available CPU time. / 预测完全准确。与Q3（SWITCH_ON_IO，总时间7）相比，这种"笨"的切换策略多浪费了4个tick，因为CPU在PID0只是阻塞（而非结束）时拒绝运行PID1——这正体现了朴素调度器如何浪费可用的CPU时间。
 
 ## Q5
 - Prediction / 预测: Total Time 7, CPU Busy 6 (85.71%), IO Busy 5 (71.43%) / 总时间7，CPU利用率85.71%，I/O利用率71.43%
 - Reasoning / 理由: This is the same process setup as Q3 (1:0,4:100) but with SWITCH_ON_IO explicitly set, which is also the default. So the result should match Q3 exactly: PID 0 issues I/O and immediately switches to PID 1, which fills most of the wait time, leaving only 1 idle tick instead of the 4 wasted in Q4. / 这和Q3的进程设置完全相同(1:0,4:100)，只是显式指定了SWITCH_ON_IO（这也是默认值）。所以结果应该和Q3完全一致：PID0发起I/O后立刻切换给PID1，PID1填满了大部分等待时间，只剩1个tick空闲，而不是Q4里浪费的4个tick。
-- Verified result / 验证结果:
-- Analysis / 分析:
+- Verified result / 验证结果: Total Time 7, CPU Busy 6 (85.71%), IO Busy 5 (71.43%) / 总时间7，CPU利用率85.71%，I/O利用率71.43%
+- Analysis / 分析: The prediction matched exactly, identical to Q3's result. This confirms that SWITCH_ON_IO is indeed the default behavior, and that switching away from a process as soon as it needs I/O is a much more efficient use of CPU than waiting for it to fully finish (Q4). / 预测完全准确，结果与Q3完全一致。这验证了SWITCH_ON_IO确实是默认行为，而且一旦进程需要I/O就立刻切换，比等它彻底结束（Q4）更能高效利用CPU。
 
 ## Q6
 - Prediction / 预测: Since -I IO_RUN_LATER means a process that just finished an I/O goes to the back of the ready queue instead of running immediately, PID 0 will likely get delayed behind the CPU-bound processes after each I/O completes, finishing last despite having the fewest instructions. / 由于-I IO_RUN_LATER意味着刚完成I/O的进程会排到就绪队列末尾而不是立刻运行，PID0在每次I/O完成后很可能会被排在纯CPU进程后面，尽管它指令数最少，却会最后结束。
 - Reasoning / 理由: PID 0 issues an I/O, switches away (SWITCH_ON_IO), and while it's BLOCKED, the other processes use the CPU. Because of IO_RUN_LATER, once PID 0's I/O finishes, it doesn't jump the queue — it waits behind whichever CPU-bound process is currently running or next in line. This repeats for each of PID 0's 3 I/O instructions, pushing PID 0's completion further back each time. / PID0发起I/O后切换走(SWITCH_ON_IO)，在它BLOCKED期间，其他进程使用CPU。由于IO_RUN_LATER，PID0的I/O一旦完成，并不会插队，而是要排在当前运行或排队中的CPU进程后面。PID0的3次I/O每次都会重复这个过程，使PID0的结束时间一再推迟。
-- Verified result / 验证结果:
-- Analysis / 分析:
+- Verified result / 验证结果: Total Time 31, CPU Busy 21 (67.74%), IO Busy 15 (48.39%) / 总时间31，CPU利用率67.74%，I/O利用率48.39%
+- Analysis / 分析: The prediction direction was correct — PID 0 is still handling its final io_done at tick 31 while PID 1, 2, and 3 have already finished, confirming that IO_RUN_LATER delays PID 0 behind the other processes after every I/O. The I/O device is sometimes idle between PID 0's I/O calls since PID 0 must wait its turn in the queue before it can issue its next I/O instruction. / 预测方向正确——PID0在tick31还在处理它最后的io_done，而PID1、2、3早已结束，这验证了IO_RUN_LATER确实会在每次I/O后把PID0排到其他进程后面。由于PID0必须排队等轮到自己才能发起下一次I/O，I/O设备在PID0两次I/O之间有时会处于空闲状态。
 
 ## Q7
 - Prediction / 预测: With IO_RUN_IMMEDIATE, PID 0 can issue its next I/O right after the previous one finishes, without waiting behind the other CPU-bound processes. This should keep the I/O device constantly busy and shrink the total time compared to Q6. / 使用IO_RUN_IMMEDIATE，PID0在上一次I/O完成后可以立刻发起下一次I/O，不用排在其他CPU进程后面等待。这应该能让I/O设备持续忙碌，相比Q6缩短总时间。
 - Reasoning / 理由: Unlike IO_RUN_LATER (Q6), where PID 0 goes to the back of the ready queue after each I/O, IO_RUN_IMMEDIATE lets PID 0 jump straight back onto the CPU to issue its next I/O as soon as the current one completes. This keeps PID 0's three I/O calls close together instead of spread out, and the I/O device stays busy sooner. / 与IO_RUN_LATER（Q6）不同——PID0每次I/O后都要排到就绪队列末尾——IO_RUN_IMMEDIATE让PID0在当前I/O一完成就能立刻抢回CPU、发起下一次I/O。这让PID0的三次I/O调用更紧凑，而不是分散开，I/O设备也能更早、更持续地忙碌起来。
-- Verified result / 验证结果:
-- Analysis / 分析:
+- Verified result / 验证结果: Total Time 21, CPU Busy 21 (100.00%), IO Busy 15 (71.43%) / 总时间21，CPU利用率100.00%，I/O利用率71.43%
+- Analysis / 分析: The prediction direction was correct and the improvement was even bigger than expected — CPU Busy reached a perfect 100%, meaning the CPU never sat idle at all, and Total Time dropped from 31 (Q6) to 21. Even though the CPU and I/O workloads are identical to Q6 (21 and 15 ticks respectively), letting PID 0 immediately re-run after I/O eliminates all the idle gaps that IO_RUN_LATER created, showing why real schedulers favor immediately re-running I/O-bound processes. / 预测方向正确，而且改善幅度比预期更大——CPU利用率达到了完美的100%，说明CPU完全没有空闲过，总时间也从Q6的31降到了21。尽管CPU和I/O的总工作量跟Q6完全相同（分别是21和15个tick），但让PID0在I/O后立刻重新运行，消除了IO_RUN_LATER造成的所有空闲间隙，这说明了为什么真实的调度器倾向于让I/O密集型进程立刻重新运行。
 
 ## Q8
 - Prediction / 预测: Since the process instructions are randomly determined by the seed, the exact outcome is hard to predict precisely beforehand, but SWITCH_ON_END should generally perform worse than the default/IO_RUN_IMMEDIATE, since it can never overlap I/O wait with other work. / 由于进程的具体指令是由种子随机决定的，事先很难精确预测确切结果，但SWITCH_ON_END通常应该表现得比default/IO_RUN_IMMEDIATE更差，因为它永远无法让I/O等待和其他工作重叠。
 - Reasoning / 理由: With seed 1, PID 0's 3 instructions turned out to be CPU, I/O, I/O, while PID 1's turned out to be 3 CPU instructions. Under default/IO_RUN_IMMEDIATE, PID 1 can run during PID 0's first I/O wait, but PID 1 finishes (tick 6) before PID 0's I/O completes (tick 8), so there's no process left to compete for the CPU when PID 0's I/O finishes — meaning IO_RUN_LATER vs IO_RUN_IMMEDIATE makes no difference here. Under SWITCH_ON_END, PID 1 isn't allowed to run until PID 0 is fully DONE, wasting the overlap opportunity entirely. / 在种子1下，PID0的3条指令实际是CPU、I/O、I/O，PID1的3条则都是CPU指令。在default/IO_RUN_IMMEDIATE下，PID1可以在PID0的第一次I/O等待期间运行，但PID1在tick6就结束了，早于PID0在tick8完成的I/O，所以PID0的I/O完成时已经没有进程跟它竞争CPU——这意味着IO_RUN_LATER和IO_RUN_IMMEDIATE在这个场景下没有区别。而在SWITCH_ON_END下，PID1直到PID0完全DONE才被允许运行，完全浪费了本可重叠的机会。
-- Verified result / 验证结果:
-- Analysis / 分析:
+- Verified result / 验证结果: default: Total Time 15, CPU Busy 8 (53.33%), IO Busy 10 (66.67%); IO_RUN_IMMEDIATE: identical to default (Total Time 15); SWITCH_ON_END: Total Time 18, CPU Busy 8 (44.44%), IO Busy 10 (55.56%) / default：总时间15，CPU利用率53.33%，I/O利用率66.67%；IO_RUN_IMMEDIATE：与default完全相同（总时间15）；SWITCH_ON_END：总时间18，CPU利用率44.44%，I/O利用率55.56%
+- Analysis / 分析: As predicted, SWITCH_ON_END performed worse (18 vs 15 ticks), confirming it wastes CPU time by refusing to overlap I/O wait with other work. The surprising finding is that default and IO_RUN_IMMEDIATE produced identical results here — this shows that the -I setting only matters when there's actual competition for the CPU after an I/O completes; with this particular random instruction mix, PID 1 had already finished before that moment arrived, so the setting had no effect. Different seeds (2 and 3) would likely show IO_RUN_IMMEDIATE outperforming default when there IS contention. / 正如预测的那样，SWITCH_ON_END表现更差（18 vs 15个tick），验证了它拒绝让I/O等待与其他工作重叠会浪费CPU时间。令人意外的发现是default和IO_RUN_IMMEDIATE在这里结果完全相同——这说明-I设置只有在I/O完成后真的存在CPU竞争时才有意义；在这组特定的随机指令组合下，PID1早已结束，竞争的时机根本没出现，所以该设置没有产生影响。不同的种子（2和3）很可能会在存在竞争的情况下看到IO_RUN_IMMEDIATE表现优于default。
 

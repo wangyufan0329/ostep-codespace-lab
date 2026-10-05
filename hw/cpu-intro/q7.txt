@@ -1,0 +1,27 @@
+Time        PID: 0        PID: 1        PID: 2        PID: 3           CPU           IOs
+  1         RUN:io         READY         READY         READY             1          
+  2        BLOCKED       RUN:cpu         READY         READY             1             1
+  3        BLOCKED       RUN:cpu         READY         READY             1             1
+  4        BLOCKED       RUN:cpu         READY         READY             1             1
+  5        BLOCKED       RUN:cpu         READY         READY             1             1
+  6        BLOCKED       RUN:cpu         READY         READY             1             1
+  7*   RUN:io_done          DONE         READY         READY             1          
+  8         RUN:io          DONE         READY         READY             1          
+  9        BLOCKED          DONE       RUN:cpu         READY             1             1
+ 10        BLOCKED          DONE       RUN:cpu         READY             1             1
+ 11        BLOCKED          DONE       RUN:cpu         READY             1             1
+ 12        BLOCKED          DONE       RUN:cpu         READY             1             1
+ 13        BLOCKED          DONE       RUN:cpu         READY             1             1
+ 14*   RUN:io_done          DONE          DONE         READY             1          
+ 15         RUN:io          DONE          DONE         READY             1          
+ 16        BLOCKED          DONE          DONE       RUN:cpu             1             1
+ 17        BLOCKED          DONE          DONE       RUN:cpu             1             1
+ 18        BLOCKED          DONE          DONE       RUN:cpu             1             1
+ 19        BLOCKED          DONE          DONE       RUN:cpu             1             1
+ 20        BLOCKED          DONE          DONE       RUN:cpu             1             1
+ 21*   RUN:io_done          DONE          DONE          DONE             1          
+
+Stats: Total Time 21
+Stats: CPU Busy 21 (100.00%)
+Stats: IO Busy  15 (71.43%)
+

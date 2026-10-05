@@ -1,0 +1,83 @@
+### default
+Time        PID: 0        PID: 1           CPU           IOs
+  1         RUN:io         READY             1          
+  2        BLOCKED       RUN:cpu             1             1
+  3        BLOCKED        RUN:io             1             1
+  4        BLOCKED       BLOCKED                           2
+  5        BLOCKED       BLOCKED                           2
+  6        BLOCKED       BLOCKED                           2
+  7*   RUN:io_done       BLOCKED             1             1
+  8         RUN:io       BLOCKED             1             1
+  9*       BLOCKED   RUN:io_done             1             1
+ 10        BLOCKED        RUN:io             1             1
+ 11        BLOCKED       BLOCKED                           2
+ 12        BLOCKED       BLOCKED                           2
+ 13        BLOCKED       BLOCKED                           2
+ 14*   RUN:io_done       BLOCKED             1             1
+ 15        RUN:cpu       BLOCKED             1             1
+ 16*          DONE   RUN:io_done             1          
+
+Stats: Total Time 16
+Stats: CPU Busy 10 (62.50%)
+Stats: IO Busy  14 (87.50%)
+
+### -I IO_RUN_IMMEDIATE
+Time        PID: 0        PID: 1           CPU           IOs
+  1         RUN:io         READY             1          
+  2        BLOCKED       RUN:cpu             1             1
+  3        BLOCKED        RUN:io             1             1
+  4        BLOCKED       BLOCKED                           2
+  5        BLOCKED       BLOCKED                           2
+  6        BLOCKED       BLOCKED                           2
+  7*   RUN:io_done       BLOCKED             1             1
+  8         RUN:io       BLOCKED             1             1
+  9*       BLOCKED   RUN:io_done             1             1
+ 10        BLOCKED        RUN:io             1             1
+ 11        BLOCKED       BLOCKED                           2
+ 12        BLOCKED       BLOCKED                           2
+ 13        BLOCKED       BLOCKED                           2
+ 14*   RUN:io_done       BLOCKED             1             1
+ 15        RUN:cpu       BLOCKED             1             1
+ 16*          DONE   RUN:io_done             1          
+
+Stats: Total Time 16
+Stats: CPU Busy 10 (62.50%)
+Stats: IO Busy  14 (87.50%)
+
+### -S SWITCH_ON_END
+Time        PID: 0        PID: 1           CPU           IOs
+  1         RUN:io         READY             1          
+  2        BLOCKED         READY                           1
+  3        BLOCKED         READY                           1
+  4        BLOCKED         READY                           1
+  5        BLOCKED         READY                           1
+  6        BLOCKED         READY                           1
+  7*   RUN:io_done         READY             1          
+  8         RUN:io         READY             1          
+  9        BLOCKED         READY                           1
+ 10        BLOCKED         READY                           1
+ 11        BLOCKED         READY                           1
+ 12        BLOCKED         READY                           1
+ 13        BLOCKED         READY                           1
+ 14*   RUN:io_done         READY             1          
+ 15        RUN:cpu         READY             1          
+ 16           DONE       RUN:cpu             1          
+ 17           DONE        RUN:io             1          
+ 18           DONE       BLOCKED                           1
+ 19           DONE       BLOCKED                           1
+ 20           DONE       BLOCKED                           1
+ 21           DONE       BLOCKED                           1
+ 22           DONE       BLOCKED                           1
+ 23*          DONE   RUN:io_done             1          
+ 24           DONE        RUN:io             1          
+ 25           DONE       BLOCKED                           1
+ 26           DONE       BLOCKED                           1
+ 27           DONE       BLOCKED                           1
+ 28           DONE       BLOCKED                           1
+ 29           DONE       BLOCKED                           1
+ 30*          DONE   RUN:io_done             1          
+
+Stats: Total Time 30
+Stats: CPU Busy 10 (33.33%)
+Stats: IO Busy  20 (66.67%)
+
