@@ -1,0 +1,23 @@
+ARG policy FIFO
+ARG jlist 300,200,100
+
+Here is the job list, with the run time of each job: 
+  Job 0 ( length = 300.0 )
+  Job 1 ( length = 200.0 )
+  Job 2 ( length = 100.0 )
+
+
+** Solutions **
+
+Execution trace:
+  [ time   0 ] Run job 0 for 300.00 secs ( DONE at 300.00 )
+  [ time 300 ] Run job 1 for 200.00 secs ( DONE at 500.00 )
+  [ time 500 ] Run job 2 for 100.00 secs ( DONE at 600.00 )
+
+Final statistics:
+  Job   0 -- Response: 0.00  Turnaround 300.00  Wait 0.00
+  Job   1 -- Response: 300.00  Turnaround 500.00  Wait 300.00
+  Job   2 -- Response: 500.00  Turnaround 600.00  Wait 500.00
+
+  Average -- Response: 266.67  Turnaround 466.67  Wait 266.67
+
