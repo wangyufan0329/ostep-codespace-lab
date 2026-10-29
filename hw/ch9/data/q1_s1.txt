@@ -1,0 +1,55 @@
+ARG jlist 
+ARG jobs 3
+ARG maxlen 10
+ARG maxticket 100
+ARG quantum 1
+ARG seed 1
+
+Here is the job list, with the run time of each job: 
+  Job 0 ( length = 1, tickets = 84 )
+  Job 1 ( length = 7, tickets = 25 )
+  Job 2 ( length = 4, tickets = 44 )
+
+
+** Solutions **
+
+Random 651593 -> Winning ticket 119 (of 153) -> Run 2
+  Jobs:
+ (  job:0 timeleft:1 tix:84 )  (  job:1 timeleft:7 tix:25 )  (* job:2 timeleft:4 tix:44 ) 
+Random 788724 -> Winning ticket 9 (of 153) -> Run 0
+  Jobs:
+ (* job:0 timeleft:1 tix:84 )  (  job:1 timeleft:7 tix:25 )  (  job:2 timeleft:3 tix:44 ) 
+--> JOB 0 DONE at time 2
+Random 93859 -> Winning ticket 19 (of 69) -> Run 1
+  Jobs:
+ (  job:0 timeleft:0 tix:--- )  (* job:1 timeleft:7 tix:25 )  (  job:2 timeleft:3 tix:44 ) 
+Random 28347 -> Winning ticket 57 (of 69) -> Run 2
+  Jobs:
+ (  job:0 timeleft:0 tix:--- )  (  job:1 timeleft:6 tix:25 )  (* job:2 timeleft:3 tix:44 ) 
+Random 835765 -> Winning ticket 37 (of 69) -> Run 2
+  Jobs:
+ (  job:0 timeleft:0 tix:--- )  (  job:1 timeleft:6 tix:25 )  (* job:2 timeleft:2 tix:44 ) 
+Random 432767 -> Winning ticket 68 (of 69) -> Run 2
+  Jobs:
+ (  job:0 timeleft:0 tix:--- )  (  job:1 timeleft:6 tix:25 )  (* job:2 timeleft:1 tix:44 ) 
+--> JOB 2 DONE at time 6
+Random 762280 -> Winning ticket 5 (of 25) -> Run 1
+  Jobs:
+ (  job:0 timeleft:0 tix:--- )  (* job:1 timeleft:6 tix:25 )  (  job:2 timeleft:0 tix:--- ) 
+Random 2106 -> Winning ticket 6 (of 25) -> Run 1
+  Jobs:
+ (  job:0 timeleft:0 tix:--- )  (* job:1 timeleft:5 tix:25 )  (  job:2 timeleft:0 tix:--- ) 
+Random 445387 -> Winning ticket 12 (of 25) -> Run 1
+  Jobs:
+ (  job:0 timeleft:0 tix:--- )  (* job:1 timeleft:4 tix:25 )  (  job:2 timeleft:0 tix:--- ) 
+Random 721540 -> Winning ticket 15 (of 25) -> Run 1
+  Jobs:
+ (  job:0 timeleft:0 tix:--- )  (* job:1 timeleft:3 tix:25 )  (  job:2 timeleft:0 tix:--- ) 
+Random 228762 -> Winning ticket 12 (of 25) -> Run 1
+  Jobs:
+ (  job:0 timeleft:0 tix:--- )  (* job:1 timeleft:2 tix:25 )  (  job:2 timeleft:0 tix:--- ) 
+Random 945271 -> Winning ticket 21 (of 25) -> Run 1
+  Jobs:
+ (  job:0 timeleft:0 tix:--- )  (* job:1 timeleft:1 tix:25 )  (  job:2 timeleft:0 tix:--- ) 
+--> JOB 1 DONE at time 12
+

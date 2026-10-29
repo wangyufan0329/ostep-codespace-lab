@@ -1,0 +1,6 @@
+q=1  runs=20  mean first finish=189.3  mean U=0.947
+q=5  runs=20  mean first finish=174.2  mean U=0.871
+q=10  runs=20  mean first finish=169.5  mean U=0.848
+q=20  runs=20  mean first finish=156.0  mean U=0.780
+q=50  runs=20  mean first finish=125.0  mean U=0.625
+q=100  runs=20  mean first finish=100.0  mean U=0.500

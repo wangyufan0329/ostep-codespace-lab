@@ -1,0 +1,11 @@
+length=    1  lottery mean U=0.500  stride (theory) U=0.5000
+length=    2  lottery mean U=0.633  stride (theory) U=0.7500
+length=    5  lottery mean U=0.770  stride (theory) U=0.9000
+length=   10  lottery mean U=0.847  stride (theory) U=0.9500
+length=   20  lottery mean U=0.879  stride (theory) U=0.9750
+length=   50  lottery mean U=0.937  stride (theory) U=0.9900
+length=  100  lottery mean U=0.944  stride (theory) U=0.9950
+length=  200  lottery mean U=0.957  stride (theory) U=0.9975
+length=  500  lottery mean U=0.978  stride (theory) U=0.9990
+length= 1000  lottery mean U=0.983  stride (theory) U=0.9995
+saved hw/ch9/data/q5_fairness.png
